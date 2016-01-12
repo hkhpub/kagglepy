@@ -9,7 +9,7 @@ Revised : 28 March 2014
 import csv as csv
 import numpy as np
 
-csv_file_object = csv.reader(open('/home/hkh/Downloads/train.csv', 'rb'))       # Load in the csv file
+csv_file_object = csv.reader(open('/home/hkh/sources/kagglepy/titanic/data/train.csv', 'rb'))       # Load in the csv file
 header = csv_file_object.next()                             # Skip the fist line as it is a header
 data=[]                                                     # Create a variable to hold the data
 
@@ -70,14 +70,14 @@ survival_table[ survival_table >= 0.5 ] = 1
 # Now I have my indicator I can read in the test file and write out
 # if a women then survived(1) if a man then did not survived (0)
 # First read in test
-test_file = open('/home/hkh/Downloads/test.csv', 'rb')
+test_file = open('/home/hkh/sources/kagglepy/titanic/data/test.csv', 'rb')
 test_file_object = csv.reader(test_file)
 header = test_file_object.next()
 
 # Also open the a new file so I can write to it. 
-predictions_file = open("genderclassmodel.csv", "wb")
+predictions_file = open("/home/hkh/sources/kagglepy/titanic/output/genderclassmodel.csv", "wb")
 predictions_file_object = csv.writer(predictions_file)
-predictions_file_object.writerow(["PassengerId", "Survived"])
+predictions_file_object.writerow(["Survived","PassengerId"])
 
 # First thing to do is bin up the price file
 for row in test_file_object:
@@ -104,9 +104,9 @@ for row in test_file_object:
         # Now I have the binned fare, passenger class, and whether female or male, we can
         # just cross ref their details with our survival table
     if row[3] == 'female':
-        predictions_file_object.writerow([row[0], "%d" % int(survival_table[ 0, float(row[1]) - 1, bin_fare ])])
+        predictions_file_object.writerow(["%d" % int(survival_table[ 0, float(row[1]) - 1, bin_fare]), row[0]])
     else:
-        predictions_file_object.writerow([row[0], "%d" % int(survival_table[ 1, float(row[1]) - 1, bin_fare])])
+        predictions_file_object.writerow(["%d" % int(survival_table[ 1, float(row[1]) - 1, bin_fare]), row[0]])
 
 # Close out the files
 test_file.close()
